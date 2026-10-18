@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- STYLE: Architect's vellum over a golden-hour hillside house (translucent drafting vellum, graphite hatch, warm concrete and timber light, Cormorant Garamond with Jost) | WHY: Brooklyn's own studio words are simplicity as "stripping away the unnecessary", "optimization of natural light" and harmony with "the local landscape", so the gift lets her erase the clutter off a vellum sketch and then walk the sun into the house | ALT: A blueprint drafting-table toy, rejected because blue-line cyanotype is cold and her work is warm natural material -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>With Nature as Mentor</title>
+<meta name="description" content="A small gift for Brooklyn Bogdan.">
+<meta property="og:title" content="With Nature as Mentor, for Brooklyn">
+<meta property="og:image" content="https://gordonusc.github.io/gift-brooklyn/img/hero.jpg">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&display=swap">
+<style>
+:root{--gold:#e8c27a;--ink:#2d2a26;--vellum:#f4efe4;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#1c1712;color:#fbf6ec;font:15px/1.5 Jost,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;touch-action:none}
+.stage{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:min(100vw,calc(100svh*9/16));overflow:hidden;background:#1c1712}
+.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.62) saturate(.7);transition:filter 1.6s ease}
+.stage.lit .bg{filter:brightness(1.04) saturate(1.08)}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+.top{position:absolute;left:0;right:0;top:0;padding-top:calc(env(safe-area-inset-top,0px) + 18px);padding-bottom:36px;background:linear-gradient(#1c1712cc,#1c171200);text-align:center;padding:0 20px;text-shadow:0 2px 14px #000b;pointer-events:none}
+.top small{font-weight:600;font-size:11px;letter-spacing:.3em;color:var(--gold)}
+.top h1{font:600 clamp(30px,9vw,42px)/1.05 "Cormorant Garamond",Georgia,serif;margin:6px 0}
+.top p{margin:0 auto;max-width:30ch;font-size:14.5px}
+.step{position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 40px);text-align:center;pointer-events:none}
+.step span{display:inline-block;background:#1c1712cc;border:1px solid #e8c27a88;border-radius:20px;padding:8px 16px;font-weight:600;font-size:13px;letter-spacing:.06em}
+.quote{position:absolute;left:18px;right:18px;top:40%;text-align:center;font:italic 500 clamp(20px,6.2vw,27px)/1.25 "Cormorant Garamond",serif;text-shadow:0 2px 16px #000;opacity:0;transition:opacity .6s;pointer-events:none}
+.quote.on{opacity:1}
+.end{position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 36px);padding:18px 16px;text-align:center;border-radius:14px;background:#1c1712e6;border:1px solid var(--gold);opacity:0;transform:translateY(10px);transition:all .9s;pointer-events:none}
+.end.on{opacity:1;transform:none;pointer-events:auto}
+.end h2{font:600 clamp(24px,7.5vw,32px)/1.1 "Cormorant Garamond",serif;margin:0 0 8px;color:var(--gold)}
+.end p{margin:0 auto;max-width:32ch;font-size:14.5px}
+.end button{margin-top:12px;background:transparent;color:#fbf6ec;border:1px solid #fbf6ec88;border-radius:18px;padding:7px 14px;font:500 13px Jost,sans-serif;cursor:pointer}
+.foot{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);text-align:center;font-size:11px;opacity:.75;text-shadow:0 1px 6px #000;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <img class="bg" src="img/hero.jpg" alt="A simple house of concrete, timber and glass set into a golden-hour hillside of grasses and oaks">
+  <canvas id="c"></canvas>
+  <div class="top"><small>FOR BROOKLYN</small><h1>With Nature as Mentor</h1><p>Simplicity, in your words, is stripping away the unnecessary. Erase the clutter off the vellum, then bring the sun in.</p></div>
+  <div class="quote" id="quote"></div>
+  <div class="step" id="step"><span>TAP THE PENCIL MARKS TO ERASE · <b id="n">0</b>/6</span></div>
+  <div class="end" id="end"><h2>Simplicity, authenticity, harmony.</h2><p>Houses that listen to the land and let the light do the talking. Gordon is in awe of what you build. Fight on, Brooklyn.</p><button id="again" type="button">Draw it again</button></div>
+  <div class="foot">made by Darby, Gordon's AI assistant, with love from Gordon</div>
+</div>
+<script>
+// ElevenLabs sound design: pencil on vellum, glass and timber settling, light swell, ambient piano bed. Code only mixes.
+let ac=null, master=null, bufs={}, bed=null;
+function audio(){ if(!ac){ try{ ac=new (window.AudioContext||window.webkitAudioContext)(); master=ac.createGain(); master.gain.value=.9; master.connect(ac.destination); ['pencil','settle','swell','bed'].forEach(load);}catch(e){} } if(ac&&ac.state==='suspended') ac.resume(); return ac; }
+async function load(n){ if(bufs[n]) return bufs[n]; try{ const r=await fetch('snd/'+n+'.mp3'); const a=await r.arrayBuffer(); bufs[n]=await new Promise((ok,no)=>ac.decodeAudioData(a,ok,no)); }catch(e){} return bufs[n]; }
+async function play(n,vol=1,loop=false,rate=1){ if(!audio()) return null; const b=await load(n); if(!b) return null; const s=ac.createBufferSource(), g=ac.createGain(); s.buffer=b; s.loop=loop; s.playbackRate.value=rate; g.gain.value=vol; s.connect(g).connect(master); s.start(); return {s,g}; }
+const $=s=>document.getElementById(s), stage=$('stage'), c=$('c'), x=c.getContext('2d'), D=Math.min(devicePixelRatio||1,2);
+function size(){ c.width=c.clientWidth*D; c.height=c.clientHeight*D; } size(); addEventListener('resize',size);
+// clutter marks as fractions of the stage: hatched boxes, stray lines, a heavy beam, extra columns
+const MARKS=[{u:.12,v:.42,w:.22,h:.10},{u:.62,v:.38,w:.26,h:.09},{u:.30,v:.55,w:.40,h:.06},{u:.10,v:.66,w:.18,h:.12},{u:.70,v:.62,w:.20,h:.12},{u:.38,v:.70,w:.24,h:.08}];
+const QUOTES=['"stripping away the unnecessary"','"natural materials"','"a keen appreciation for the local landscape"','"authenticity"','"harmony"','"with nature as mentor"'];
+let marks, erased, phase, sun, vellum, dragging=false, moved=false, done=false, parts=[];
+function reset(){ marks=MARKS.map(m=>({...m,a:1})); erased=0; phase='erase'; sun={t:0}; vellum=.55; done=false; stage.classList.remove('lit'); $('end').classList.remove('on'); $('n').textContent='0'; $('step').innerHTML='<span>TAP THE PENCIL MARKS TO ERASE · <b id="n">0</b>/6</span>'; }
+reset();
+function sunPos(t){ const W=c.width,H=c.height; return [W*(.14+.72*t), H*(.30-.12*Math.sin(Math.PI*t))]; }
+function pt(e){ const r=c.getBoundingClientRect(); return [(e.clientX-r.left)*D,(e.clientY-r.top)*D]; }
+function say(q){ const el=$('quote'); el.textContent=q; el.classList.add('on'); clearTimeout(say.t); say.t=setTimeout(()=>el.classList.remove('on'),1400); }
+c.addEventListener('pointerdown',e=>{ e.preventDefault(); audio(); if(!bed) play('bed',.35,true).then(h=>bed=h); const [px,py]=pt(e), W=c.width,H=c.height;
+  if(phase==='erase'){ for(let i=0;i<marks.length;i++){ const m=marks[i]; if(m.a<1) continue; const pad=18*D; if(px>m.u*W-pad&&px<(m.u+m.w)*W+pad&&py>m.v*H-pad&&py<(m.v+m.h)*H+pad){ m.a=.99; erased++; $('n').textContent=erased; play('pencil',.8,false,.95+erased*.03); say(QUOTES[i]); for(let k=0;k<14;k++) parts.push({x:px,y:py,vx:(k%7-3)*D*.8,vy:-(1+k%4)*D,a:1,c:'#f4efe4'});
+        if(erased===marks.length){ phase='sun'; setTimeout(()=>{ $('step').innerHTML='<span>NOW DRAG THE SUN ACROSS THE SKY, OR TAP THE SKY</span>'; },700); } return; } } return; }
+  if(phase==='sun'){ const [sx,sy]=sunPos(sun.t); if(Math.hypot(px-sx,py-sy)<60*D){ dragging=true; moved=false; c.setPointerCapture(e.pointerId); } else if(py<H*.5){ advance(.34); } } });
+c.addEventListener('pointermove',e=>{ if(!dragging||phase!=='sun') return; const [px]=pt(e); const t=Math.max(sun.t,Math.min(1,(px/c.width-.14)/.72)); if(t>sun.t+.01) { moved=true; sun.t=t; check(); } });
+c.addEventListener('pointerup',()=>{ if(dragging&&!moved&&phase==='sun') advance(.34); dragging=false; }); c.addEventListener('pointercancel',()=>{ dragging=false; });
+function advance(d){ sun.t=Math.min(1,sun.t+d); play('settle',.45,false,1+sun.t*.1); check(); }
+function check(){ if(sun.t>=1&&!done){ done=true; phase='done'; stage.classList.add('lit'); play('settle',.8); setTimeout(()=>play('swell',.85),300); $('step').innerHTML=''; setTimeout(()=>$('end').classList.add('on'),1100); } }
+$('again').onclick=()=>reset();
+window.__bk=()=>({phase,t:sun.t,done,erased});window.__brooklyn={erase(){ marks.forEach((m,i)=>{ if(m.a===1){ m.a=.99; erased++; } }); $('n').textContent=erased; phase='sun'; }, sun(){ advance(1); }};
+(function loop(){ const W=c.width,H=c.height; x.clearRect(0,0,W,H);
+  // vellum sheet that thins as marks are erased and lifts away when the sun is in
+  const target=phase==='erase'? .55*(1-erased/MARKS.length*.6) : (phase==='sun'? .16*(1-sun.t) : 0); vellum+=(target-vellum)*.06;
+  if(vellum>.005){ x.fillStyle=`rgba(244,239,228,${vellum})`; x.fillRect(0,0,W,H); }
+  // pencil clutter marks
+  marks.forEach(m=>{ if(m.a<1) m.a=Math.max(0,m.a-.06); if(m.a<=0) return; const X=m.u*W,Y=m.v*H,w=m.w*W,h=m.h*H; x.save(); x.globalAlpha=m.a; x.strokeStyle='#2d2a26'; x.lineWidth=1.6*D; x.strokeRect(X,Y,w,h); x.beginPath(); for(let s=-h;s<w;s+=9*D){ x.moveTo(X+Math.max(0,s),Y+Math.max(0,-s)); x.lineTo(X+Math.min(w,s+h),Y+Math.min(h,h-(s+h-Math.min(w,s+h)))); } x.stroke(); x.restore(); });
+  // sun, warm rays into the house once it moves
+  if(phase!=='erase'){ const [sx,sy]=sunPos(sun.t); const g=x.createRadialGradient(sx,sy,4*D,sx,sy,(90+140*sun.t)*D); g.addColorStop(0,'rgba(255,236,190,.95)'); g.addColorStop(.25,'rgba(255,214,140,.45)'); g.addColorStop(1,'rgba(255,200,120,0)'); x.fillStyle=g; x.beginPath(); x.arc(sx,sy,(90+140*sun.t)*D,0,7); x.fill();
+    x.fillStyle='#fff2cf'; x.beginPath(); x.arc(sx,sy,14*D,0,7); x.fill();
+    if(sun.t>.2){ x.save(); x.globalAlpha=.10+.18*sun.t; x.fillStyle='#ffd98a'; for(let k=0;k<3;k++){ x.beginPath(); x.moveTo(sx,sy); x.lineTo(W*(.28+k*.16),H*.86); x.lineTo(W*(.34+k*.16),H*.86); x.closePath(); x.fill(); } x.restore(); } }
+  parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.08*D; p.a-=.025; x.globalAlpha=Math.max(p.a,0); x.fillStyle=p.c; x.fillRect(p.x,p.y,3*D,3*D); }); x.globalAlpha=1; parts=parts.filter(p=>p.a>0);
+  requestAnimationFrame(loop); })();
+</script>
+</body>
+</html>

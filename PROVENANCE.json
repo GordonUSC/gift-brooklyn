@@ -1,0 +1,22 @@
+{
+ "img/hero.jpg": {
+  "tool": "higgsfield",
+  "prompt": "simple concrete, timber and glass residence set into a golden-hour California hillside with oaks and a reflecting pool, no people (job da7a3d36, gpt_image_2_5)"
+ },
+ "snd/pencil.mp3": {
+  "tool": "elevenlabs",
+  "prompt": "graphite pencil line on vellum with eraser sweep (flow nE3Dum0CbJB1Mfv3AMEB)"
+ },
+ "snd/settle.mp3": {
+  "tool": "elevenlabs",
+  "prompt": "glass and timber settling tone (flow nE3Dum0CbJB1Mfv3AMEB)"
+ },
+ "snd/swell.mp3": {
+  "tool": "elevenlabs",
+  "prompt": "luminous swell of chimes and warm air (flow nE3Dum0CbJB1Mfv3AMEB)"
+ },
+ "snd/bed.mp3": {
+  "tool": "elevenlabs",
+  "prompt": "minimalist ambient piano bed, eleven_music_v2_5, 2 s crossfade baked (flow nE3Dum0CbJB1Mfv3AMEB)"
+ }
+}
